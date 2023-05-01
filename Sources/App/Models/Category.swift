@@ -11,7 +11,7 @@ import Vapor
 final class Category: Model, Content {
     
     // Name of the table or collection
-    static let schema = "restaurant"
+    static let schema = "restaurant_category"
     
     // Unique identifier for this Category
     @ID(custom: .id)

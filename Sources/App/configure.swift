@@ -16,7 +16,9 @@ public func configure(_ app: Application) async throws {
         database: Environment.get("DATABASE_NAME") ?? "vapor_database"
     ), as: .psql)
 
-    app.migrations.add(CreateTodo())
+    app.migrations.add([
+        CreateCategory(), CreateMenuItem()
+    ])
 
     app.views.use(.leaf)
 

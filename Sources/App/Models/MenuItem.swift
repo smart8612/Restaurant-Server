@@ -4,7 +4,7 @@ import Vapor
 final class MenuItem: Model, Content {
     
     // Name of the table or collection
-    static let schema = "restaurant"
+    static let schema = "restaurant_menuItem"
     
     // Unique identifier for this MenuItem
     @ID(custom: .id)
@@ -32,7 +32,7 @@ final class MenuItem: Model, Content {
     
     // The MenuItem's image url
     @Field(key: "image_url")
-    var imageUrl: URL
+    var imageUrl: String
     
     // Creates a new, empty MenuItem
     init() { }
@@ -40,7 +40,7 @@ final class MenuItem: Model, Content {
     // Creates a new MenuItem with all properties set
     init(id: Int? = nil, categoryID: Category.IDValue,
          title: String, name: String, description: String,
-         price: Double, imageUrl: URL) {
+         price: Double, imageUrl: String) {
         self.id = id
         self.title = title
         self.name = name
