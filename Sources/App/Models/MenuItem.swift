@@ -10,6 +10,10 @@ final class MenuItem: Model, Content {
     @ID(custom: .id)
     var id: Int?
     
+    // Parent Relation
+    @Parent(key: "category_id")
+    var category: Category
+    
     // The MenuItem's title
     @Field(key: "title")
     var title: String
@@ -26,27 +30,24 @@ final class MenuItem: Model, Content {
     @Field(key: "price")
     var price: Double
     
-    // The MenuItem's category
-    @Field(key: "category")
-    var category: String
-    
     // The MenuItem's image url
     @Field(key: "image_url")
-    var image_url: URL
+    var imageUrl: URL
     
     // Creates a new, empty MenuItem
     init() { }
     
     // Creates a new MenuItem with all properties set
-    init(id: Int? = nil, title: String, name: String, description: String,
-         price: Double, category: String, image_url: URL) {
+    init(id: Int? = nil, categoryID: Category.IDValue,
+         title: String, name: String, description: String,
+         price: Double, imageUrl: URL) {
         self.id = id
         self.title = title
         self.name = name
         self.description = description
         self.price = price
-        self.category = category
-        self.image_url = image_url
+        self.$category.id = categoryID
+        self.imageUrl = imageUrl
     }
     
 }
