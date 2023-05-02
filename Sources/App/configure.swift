@@ -18,11 +18,12 @@ public func configure(_ app: Application) async throws {
 
     app.migrations.add([
         CreateCategory(), CreateMenuItem()
-    ])
+    ], to: .psql)
 
     app.views.use(.leaf)
-
     
+    // Log during server development
+    app.logger.logLevel = .debug
 
     // register routes
     try routes(app)

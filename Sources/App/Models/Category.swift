@@ -14,7 +14,7 @@ final class Category: Model, Content {
     static let schema = "restaurant_category"
     
     // Unique identifier for this Category
-    @ID(custom: .id)
+    @ID(custom: "id", generatedBy: .database)
     var id: Int?
     
     // The MenuItem's category
