@@ -1,5 +1,5 @@
 //
-//  CategoriesContent.swift
+//  CategoriesResponse.swift
 //  
 //
 //  Created by JeongTaek Han on 2023/05/02.

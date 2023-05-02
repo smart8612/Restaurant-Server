@@ -7,16 +7,12 @@ final class MenuItem: Model, Content {
     static let schema = "restaurant_menuItem"
     
     // Unique identifier for this MenuItem
-    @ID(custom: .id)
+    @ID(custom: "id", generatedBy: .database)
     var id: Int?
     
     // Parent Relation
     @Parent(key: "category_id")
     var category: Category
-    
-    // The MenuItem's title
-    @Field(key: "title")
-    var title: String
     
     // The MenuItem's name
     @Field(key: "name")
@@ -30,6 +26,9 @@ final class MenuItem: Model, Content {
     @Field(key: "price")
     var price: Double
     
+    @Field(key: "estimated_prep_time")
+    var estimatedPrepTime: Int
+    
     // The MenuItem's image url
     @Field(key: "image_url")
     var imageUrl: String
@@ -39,15 +38,14 @@ final class MenuItem: Model, Content {
     
     // Creates a new MenuItem with all properties set
     init(id: Int? = nil, categoryID: Category.IDValue,
-         title: String, name: String, description: String,
-         price: Double, imageUrl: String) {
+         name: String, description: String, price: Double, imageUrl: String, estimatedPrepTime: Int) {
         self.id = id
-        self.title = title
         self.name = name
         self.description = description
         self.price = price
         self.$category.id = categoryID
         self.imageUrl = imageUrl
+        self.estimatedPrepTime = estimatedPrepTime
     }
     
 }

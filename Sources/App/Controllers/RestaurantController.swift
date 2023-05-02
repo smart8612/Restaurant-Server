@@ -5,12 +5,18 @@ struct RestaurantController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
         routes.get("categories", use: getCategories)
+        routes.get("menu", use: getMenus)
     }
-    
     
     func getCategories(req: Request) async throws -> Response {
         let categories = try await Category.query(on: req.db).all()
         let result = CategoriesResponse(categories: categories)
+        return try await result.encodeResponse(for: req)
+    }
+    
+    func getMenus(req: Request) async throws -> Response {
+        let menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
+        let result = MenuItemsResponse(menuItems: menuItems)
         return try await result.encodeResponse(for: req)
     }
 

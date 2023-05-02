@@ -8,7 +8,7 @@
 import Fluent
 import Vapor
 
-final class Category: Model, Content {
+final class Category: Model {
     
     // Name of the table or collection
     static let schema = "restaurant_category"
