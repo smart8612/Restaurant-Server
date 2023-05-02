@@ -8,8 +8,10 @@ struct RestaurantController: RouteCollection {
     }
     
     
-    func getCategories(req: Request) async throws -> [Category] {
-        try await Category.query(on: req.db).all()
+    func getCategories(req: Request) async throws -> Response {
+        let categories = try await Category.query(on: req.db).all()
+        let result = CategoriesResponse(categories: categories)
+        return try await result.encodeResponse(for: req)
     }
 
 //    func index(req: Request) async throws -> [Todo] {
