@@ -15,7 +15,15 @@ struct RestaurantController: RouteCollection {
     }
     
     func getMenus(req: Request) async throws -> Response {
-        let menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
+        let menuItems: [MenuItem]
+        
+        if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
+            menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
+                .filter({ $0.category.category == categoryName })
+        } else {
+            menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
+        }
+        
         let result = MenuItemsResponse(menuItems: menuItems)
         return try await result.encodeResponse(for: req)
     }
