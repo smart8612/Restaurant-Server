@@ -6,6 +6,7 @@ struct RestaurantController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         routes.get("categories", use: getCategories)
         routes.get("menu", use: getMenus)
+        routes.post("order", use: orderMenuItems)
     }
     
     func getCategories(req: Request) async throws -> Response {
@@ -26,6 +27,24 @@ struct RestaurantController: RouteCollection {
         
         let result = MenuItemsResponse(menuItems: menuItems)
         return try await result.encodeResponse(for: req)
+    }
+    
+    func orderMenuItems(req: Request) async throws -> [String: Int] {
+        var preperationTime = 1
+        
+        guard let menuIds = try? req.content.decode(OrderRequestQuery.self).menuIds else {
+            return ["preparation_time": preperationTime]
+        }
+        
+        let menuItems = try await MenuItem.query(on: req.db).all()
+        
+        preperationTime = menuIds
+            .compactMap { id in
+                menuItems.filter { item in (try? item.requireID() == id) ?? false }.first
+            }
+            .reduce(preperationTime) { $0 + $1.estimatedPrepTime }
+        
+        return ["preparation_time": preperationTime]
     }
 
 //    func index(req: Request) async throws -> [Todo] {
