@@ -22,12 +22,12 @@ struct CreateMenuItem: AsyncMigration {
             .create()
         
         try await [
-            MenuItem(categoryID: 4, name: "Spaghetti and Meatballs", description: "Seasoned meatballs on top of freshly-made spaghetti. Served with a robust tomato sauce.", price: 9.0, imageUrl: "#", estimatedPrepTime: 20),
-            MenuItem(categoryID: 4, name: "Margherita Pizza", description: "Tomato sauce, fresh mozzarella, basil, and extra-virgin olive oil.", price: 10.0, imageUrl: "#", estimatedPrepTime: 30),
-            MenuItem(categoryID: 4, name: "Grilled Steelhead Trout", description: "Pacific steelhead trout with lettuce, tomato, and red onion.", price: 12.75, imageUrl: "#", estimatedPrepTime: 15),
-            MenuItem(categoryID: 1, name: "Ham and mushroom ravioli", description: "House-made ravioli filled with pine nuts, parmesan, ham, and mushrooms. Served over tomato sauce.", price: 8.0, imageUrl: "#", estimatedPrepTime: 12),
-            MenuItem(categoryID: 3, name: "Chicken Noodle Soup", description: "Chicken simmered alongside yellow onions, carrots, celery, and bay leaves.", price: 3.5, imageUrl: "#", estimatedPrepTime: 5),
-            MenuItem(categoryID: 2, name: "Italian Salad", description: "Garlic, red onions, tomatoes, mushrooms, and olives on top of romaine lettuce.", price: 5.0, imageUrl: "#", estimatedPrepTime: 5),
+            MenuItem(categoryID: 4, name: "Spaghetti and Meatballs", description: "Seasoned meatballs on top of freshly-made spaghetti. Served with a robust tomato sauce.", price: 9.0, imageUrl: "/images/1.png", estimatedPrepTime: 20),
+            MenuItem(categoryID: 4, name: "Margherita Pizza", description: "Tomato sauce, fresh mozzarella, basil, and extra-virgin olive oil.", price: 10.0, imageUrl: "/images/3.png", estimatedPrepTime: 30),
+            MenuItem(categoryID: 4, name: "Grilled Steelhead Trout", description: "Pacific steelhead trout with lettuce, tomato, and red onion.", price: 12.75, imageUrl: "/images/2.png", estimatedPrepTime: 15),
+            MenuItem(categoryID: 1, name: "Ham and mushroom ravioli", description: "House-made ravioli filled with pine nuts, parmesan, ham, and mushrooms. Served over tomato sauce.", price: 8.0, imageUrl: "/images/4.png", estimatedPrepTime: 12),
+            MenuItem(categoryID: 3, name: "Chicken Noodle Soup", description: "Chicken simmered alongside yellow onions, carrots, celery, and bay leaves.", price: 3.5, imageUrl: "/images/6.png", estimatedPrepTime: 5),
+            MenuItem(categoryID: 2, name: "Italian Salad", description: "Garlic, red onions, tomatoes, mushrooms, and olives on top of romaine lettuce.", price: 5.0, imageUrl: "/images/5.png", estimatedPrepTime: 5),
         ].create(on: database)
     }
     

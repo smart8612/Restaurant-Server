@@ -7,6 +7,7 @@ struct RestaurantController: RouteCollection {
         routes.get("categories", use: getCategories)
         routes.get("menu", use: getMenus)
         routes.post("order", use: orderMenuItems)
+        routes.get("images", ":name", use: getImages)
     }
     
     func getCategories(req: Request) async throws -> Response {
@@ -45,6 +46,30 @@ struct RestaurantController: RouteCollection {
             .reduce(preperationTime) { $0 + $1.estimatedPrepTime }
         
         return ["preparation_time": preperationTime]
+    }
+    
+    func getImages(req: Request) async throws -> Response {
+        let fileName = req.parameters.get("name") ?? ""
+        
+        // Get the file path of the image you want to return
+        let filePath = "\(req.application.directory.publicDirectory)images/\(fileName)"
+        
+        print(filePath)
+
+        // Read the image file data from disk
+        guard let fileData = FileManager.default.contents(atPath: filePath) else {
+            throw Abort(.notFound)
+        }
+
+        // Create a Vapor response with the image data
+        let response = Response(
+            status: .ok,
+            headers: HTTPHeaders([("Content-Type", "image/jpeg")]),
+            body: Response.Body(data: fileData)
+        )
+
+        return response
+        
     }
 
 //    func index(req: Request) async throws -> [Todo] {
