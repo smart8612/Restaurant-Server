@@ -14,7 +14,7 @@ struct CategoriesResponse: Content {
     
     init(categories: [Category]) {
         self.categories = categories.map { category in
-            category.category
+            category.name
         }
     }
     

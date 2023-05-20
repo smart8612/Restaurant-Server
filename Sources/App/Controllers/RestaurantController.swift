@@ -21,7 +21,7 @@ struct RestaurantController: RouteCollection {
         
         if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
             menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
-                .filter({ $0.category.category == categoryName })
+                .filter({ $0.category.name == categoryName })
         } else {
             menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
         }

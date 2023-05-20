@@ -30,7 +30,7 @@ struct MenuItemsResponse: Content {
         
         init?(menuItem: MenuItem) {
             do {
-                self.category = menuItem.category.category
+                self.category = menuItem.category.name
                 self.id = try menuItem.requireID()
                 self.image_url = menuItem.imageUrl
                 self.name = menuItem.name

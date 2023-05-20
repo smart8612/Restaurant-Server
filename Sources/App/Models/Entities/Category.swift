@@ -18,8 +18,8 @@ final class Category: Model {
     var id: Int?
     
     // The MenuItem's category
-    @Field(key: "category")
-    var category: String
+    @Field(key: "name")
+    var name: String
     
     // Creates a new, empty Category
     init() { }
@@ -27,7 +27,12 @@ final class Category: Model {
     // Creates a new MenuItem with all properties set
     init(id: Int? = nil, category: String) {
         self.id = id
-        self.category = category
+        self.name = category
+    }
+    
+    enum DatabaseKeys: String {
+        case id
+        case name
     }
     
 }
