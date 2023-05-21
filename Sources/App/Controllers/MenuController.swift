@@ -44,11 +44,11 @@ struct MenuController: RouteCollection {
     }
     
     func read(req: Request) async throws -> Response {
-        let categoryName = req.parameters.get("category")
+        let queryParams = try? req.query.decode(MenuItemReadRequest.self)
         
         let menuItems: [MenuItem]
         
-        if let categoryName = categoryName {
+        if let categoryName = queryParams?.category {
             let category = try await Category.query(on: req.db)
                 .filter(\.$name == categoryName)
                 .with(\.$menuItems) { $0.with(\.$category) }
