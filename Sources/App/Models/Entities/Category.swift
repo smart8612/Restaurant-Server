@@ -21,6 +21,9 @@ final class Category: Model {
     @Field(key: "name")
     var name: String
     
+    @Children(for: \.$category)
+    var menuItems: [MenuItem]
+    
     // Creates a new, empty Category
     init() { }
     

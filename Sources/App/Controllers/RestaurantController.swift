@@ -17,13 +17,15 @@ struct RestaurantController: RouteCollection {
     }
     
     func getMenus(req: Request) async throws -> Response {
-        let menuItems: [MenuItem]
+        var menuItems: [MenuItem] = []
         
         if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
-            menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
-                .filter({ $0.category.name == categoryName })
-        } else {
-            menuItems = try await MenuItem.query(on: req.db).with(\.$category).all()
+            let category = try await Category.query(on: req.db)
+                .filter(\.$name == categoryName)
+                .with(\.$menuItems)
+                .first()
+            
+            menuItems = category?.menuItems ?? []
         }
         
         let result = MenuItemsResponse(menuItems: menuItems)
@@ -34,7 +36,7 @@ struct RestaurantController: RouteCollection {
         var preperationTime = 1
         
         guard let menuIds = try? req.content.decode(OrderRequestQuery.self).menuIds else {
-            return ["preparation_time": preperationTime]
+            throw Abort(.notFound)
         }
         
         let menuItems = try await MenuItem.query(on: req.db).all()

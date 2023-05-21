@@ -8,14 +8,13 @@
 import Fluent
 import Vapor
 
+
 struct CategoriesResponse: Content {
     
     var categories: [String]
     
     init(categories: [Category]) {
-        self.categories = categories.map { category in
-            category.name
-        }
+        self.categories = categories.map { $0.name }
     }
     
 }
