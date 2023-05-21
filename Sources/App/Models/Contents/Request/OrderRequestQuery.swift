@@ -1,5 +1,5 @@
 //
-//  MenuItemRequestQuery.swift
+//  OrderRequestQuery.swift
 //  
 //
 //  Created by JeongTaek Han on 2023/05/03.
@@ -8,8 +8,9 @@
 import Fluent
 import Vapor
 
-struct MenuItemRequestQuery: Content {
+
+struct OrderRequestQuery: Content {
     
-    var category: String?
+    var menuIds: [Int]?
     
 }
