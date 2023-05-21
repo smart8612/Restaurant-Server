@@ -4,28 +4,23 @@ import Vapor
 struct RestaurantController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
-        routes.get("categories", use: categories)
+        try routes.register(collection: CategoriesController())
         routes.get("menu", use: menu)
         routes.post("order", use: order)
         routes.get("images", ":name", use: images)
     }
     
-    func categories(req: Request) async throws -> Response {
-        let categories = try await Category.query(on: req.db).all()
-        let result = CategoriesResponse(categories: categories)
-        return try await result.encodeResponse(for: req)
-    }
-    
     func menu(req: Request) async throws -> Response {
-        var menuItems: [MenuItem] = []
+        let menuItems: [MenuItem]
         
         if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
             let category = try await Category.query(on: req.db)
                 .filter(\.$name == categoryName)
                 .with(\.$menuItems)
                 .first()
-            
             menuItems = category?.menuItems ?? []
+        } else {
+            menuItems = try await MenuItem.query(on: req.db).all()
         }
         
         let result = MenuItemsResponse(menuItems: menuItems)
@@ -74,10 +69,7 @@ struct RestaurantController: RouteCollection {
         
     }
 
-//    func index(req: Request) async throws -> [Todo] {
-//        try await Todo.query(on: req.db).all()
-//    }
-//
+
 //    func create(req: Request) async throws -> Todo {
 //        let todo = try req.content.decode(Todo.self)
 //        try await todo.save(on: req.db)
