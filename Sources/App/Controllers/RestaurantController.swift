@@ -5,26 +5,9 @@ struct RestaurantController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
         try routes.register(collection: CategoriesController())
-        routes.get("menu", use: menu)
+        try routes.register(collection: MenuController())
         routes.post("order", use: order)
         routes.get("images", ":name", use: images)
-    }
-    
-    func menu(req: Request) async throws -> Response {
-        let menuItems: [MenuItem]
-        
-        if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
-            let category = try await Category.query(on: req.db)
-                .filter(\.$name == categoryName)
-                .with(\.$menuItems)
-                .first()
-            menuItems = category?.menuItems ?? []
-        } else {
-            menuItems = try await MenuItem.query(on: req.db).all()
-        }
-        
-        let result = MenuItemsResponse(menuItems: menuItems)
-        return try await result.encodeResponse(for: req)
     }
     
     func order(req: Request) async throws -> [String: Int] {
