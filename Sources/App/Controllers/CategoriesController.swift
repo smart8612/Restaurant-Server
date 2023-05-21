@@ -15,6 +15,8 @@ struct CategoriesController: RouteCollection {
         let categories = routes.grouped("categories")
         categories.post("", use: create)
         categories.get("", use: read)
+        categories.patch("", use: update)
+        categories.delete("", use: delete)
     }
     
     func create(req: Request) async throws -> Response {
@@ -35,13 +37,38 @@ struct CategoriesController: RouteCollection {
         return try await result.encodeResponse(for: req)
     }
     
-//    func delete(req: Request) async throws -> HTTPStatus {
-//        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db) else {
-//            throw Abort(.notFound)
-//        }
-//        try await todo.delete(on: req.db)
-//        return .noContent
-//    }
+    func update(req: Request) async throws -> Response {
+        let content = try req.content.decode(CategoryUpdateRequest.self)
+        
+        let targetCategory = try await Category.query(on: req.db)
+            .filter(\.$name == content.targetCategoryName)
+            .first()
+        
+        guard let targetCategory = targetCategory else {
+            throw Abort(.notFound)
+        }
+
+        targetCategory.name = content.changedCategoryName
+        try await targetCategory.update(on: req.db)
+        
+        return req.redirect(to: "categories")
+    }
+    
+    func delete(req: Request) async throws -> Response {
+        let content = try req.content.decode(CategoryDeleteRequest.self)
+        
+        let targetCategory = try await Category.query(on: req.db)
+            .filter(\.$name == content.targetCategoryName)
+            .first()
+        
+        guard let targetCategory = targetCategory else {
+            throw Abort(.notFound)
+        }
+        
+        try await targetCategory.delete(on: req.db)
+        
+        return req.redirect(to: "categories")
+    }
     
 }
 
