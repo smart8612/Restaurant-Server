@@ -4,19 +4,19 @@ import Vapor
 struct RestaurantController: RouteCollection {
     
     func boot(routes: RoutesBuilder) throws {
-        routes.get("categories", use: getCategories)
-        routes.get("menu", use: getMenus)
-        routes.post("order", use: orderMenuItems)
-        routes.get("images", ":name", use: getImages)
+        routes.get("categories", use: categories)
+        routes.get("menu", use: menu)
+        routes.post("order", use: order)
+        routes.get("images", ":name", use: images)
     }
     
-    func getCategories(req: Request) async throws -> Response {
+    func categories(req: Request) async throws -> Response {
         let categories = try await Category.query(on: req.db).all()
         let result = CategoriesResponse(categories: categories)
         return try await result.encodeResponse(for: req)
     }
     
-    func getMenus(req: Request) async throws -> Response {
+    func menu(req: Request) async throws -> Response {
         var menuItems: [MenuItem] = []
         
         if let categoryName = try? req.query.decode(MenuItemRequestQuery.self).category {
@@ -32,7 +32,7 @@ struct RestaurantController: RouteCollection {
         return try await result.encodeResponse(for: req)
     }
     
-    func orderMenuItems(req: Request) async throws -> [String: Int] {
+    func order(req: Request) async throws -> [String: Int] {
         var preperationTime = 1
         
         guard let menuIds = try? req.content.decode(OrderRequestQuery.self).menuIds else {
@@ -50,7 +50,7 @@ struct RestaurantController: RouteCollection {
         return ["preparation_time": preperationTime]
     }
     
-    func getImages(req: Request) async throws -> Response {
+    func images(req: Request) async throws -> Response {
         let fileName = req.parameters.get("name") ?? ""
         
         // Get the file path of the image you want to return
