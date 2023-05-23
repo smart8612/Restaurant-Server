@@ -16,7 +16,7 @@ struct MenuController: RouteCollection {
         menu.post("", use: create)
         menu.get("", use: read)
 //        menu.patch("", use: update)
-//        menu.delete("", use: delete)
+        menu.delete("", use: delete)
     }
     
     func create(req: Request) async throws -> Response {
@@ -86,20 +86,22 @@ struct MenuController: RouteCollection {
 //        return req.redirect(to: "categories")
 //    }
 //    
-//    func delete(req: Request) async throws -> Response {
-//        let content = try req.content.decode(MenuDeleteRequest.self)
-//        
-//        let targetMenuItem = try await MenuItem.find(content.menuId, on: req.db)
-//        guard let targetMenuItem = targetMenuItem else {
-//            throw Abort(.noContent)
-//        }
-//        
-//        let categoryName = targetMenuItem.$name.value ?? ""
-//        
-//        try await targetMenuItem.delete(on: req.db)
-//        
-//        return req.redirect(to: "categories/\(categoryName)")
-//    }
+    func delete(req: Request) async throws -> Response {
+        let content = try req.content.decode(MenuDeleteRequest.self)
+        
+        let targetMenuItem = try await MenuItem.query(on: req.db).with(\.$category)
+            .filter(\.$id == content.menuId)
+            .first()
+        guard let targetMenuItem = targetMenuItem else {
+            throw Abort(.noContent)
+        }
+        
+        let categoryName = targetMenuItem.category.name
+        
+        try await targetMenuItem.delete(on: req.db)
+        
+        return req.redirect(to: "menu?category=\(categoryName)")
+    }
     
 }
 
