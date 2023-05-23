@@ -11,7 +11,7 @@ import Vapor
 
 struct MenuItemResponse: Content {
     
-    var category: String
+    var category: Category
     var id: Int
     var image_url: String
     var name: String

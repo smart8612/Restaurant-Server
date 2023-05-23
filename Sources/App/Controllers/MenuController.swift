@@ -15,7 +15,7 @@ struct MenuController: RouteCollection {
         let menu = routes.grouped("menu")
         menu.post("", use: create)
         menu.get("", use: read)
-//        menu.patch("", use: update)
+        menu.patch("", use: update)
         menu.delete("", use: delete)
     }
     
@@ -58,7 +58,7 @@ struct MenuController: RouteCollection {
         
         let menuItemResponse = try menuItems.map {
             MenuItemResponse(
-                category: $0.category.name,
+                category: $0.category,
                 id: try $0.requireID(),
                 image_url: $0.imageUrl,
                 name: $0.name,
@@ -71,21 +71,47 @@ struct MenuController: RouteCollection {
         return try await result.encodeResponse(for: req)
     }
     
-//    func update(req: Request) async throws -> Response {
-//        let content = try req.content.decode(CategoryUpdateRequest.self)
-//        
-//        let targetCategory = try await Category.query(on: req.db)
-//        
-//        guard let targetCategory = targetCategory else {
-//            throw Abort(.notFound)
-//        }
-//
-//        targetCategory.name = content.changedCategoryName
-//        try await targetCategory.update(on: req.db)
-//        
-//        return req.redirect(to: "categories")
-//    }
-//    
+    func update(req: Request) async throws -> Response {
+        let content = try req.content.decode(MenuUpdateRequest.self)
+        
+        let targetMenuItem = try await MenuItem.query(on: req.db).with(\.$category)
+            .filter(\.$id == content.targetMenuId)
+            .first()
+        guard let targetMenuItem = targetMenuItem else {
+            throw Abort(.notFound)
+        }
+
+        if let category = try? await Category.find(content.categoryId, on: req.db) {
+            targetMenuItem.category = category
+        }
+        
+        if let description = content.description {
+            targetMenuItem.description = description
+        }
+        
+        if let estimatedPrepTime = content.estimatedPrepTime {
+            targetMenuItem.estimatedPrepTime = estimatedPrepTime
+        }
+        
+        if let imageUrl = content.imageUrl {
+            targetMenuItem.imageUrl = imageUrl
+        }
+        
+        if let menuName = content.menuName {
+            targetMenuItem.name = menuName
+        }
+        
+        if let price = content.price {
+            targetMenuItem.price = price
+        }
+        
+        let categoryName = targetMenuItem.category.name
+        
+        try await targetMenuItem.update(on: req.db)
+        
+        return req.redirect(to: "menu?category=\(categoryName)")
+    }
+    
     func delete(req: Request) async throws -> Response {
         let content = try req.content.decode(MenuDeleteRequest.self)
         
