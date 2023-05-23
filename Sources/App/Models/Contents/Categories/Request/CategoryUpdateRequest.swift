@@ -11,7 +11,7 @@ import Vapor
 
 struct CategoryUpdateRequest: Content {
     
-    var targetCategoryName: String
+    var targetCategoryId: Int
     var changedCategoryName: String
     
 }

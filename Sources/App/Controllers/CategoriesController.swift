@@ -48,10 +48,7 @@ struct CategoriesController: RouteCollection {
     func update(req: Request) async throws -> Response {
         let content = try req.content.decode(CategoryUpdateRequest.self)
         
-        let targetCategory = try await Category.query(on: req.db)
-            .filter(\.$name == content.targetCategoryName)
-            .first()
-        
+        let targetCategory = try await Category.find(content.targetCategoryId, on: req.db)
         guard let targetCategory = targetCategory else {
             throw Abort(.notFound)
         }
