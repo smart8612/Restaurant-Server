@@ -35,7 +35,7 @@ struct CategoriesController: RouteCollection {
         let categories = try await Category.query(on: req.db).all()
         
         let categoriesResponse = try categories.map { category in
-            CategoryResponse(
+            CategoryReadResponse(
                 id: try category.requireID(),
                 name: category.name
             )

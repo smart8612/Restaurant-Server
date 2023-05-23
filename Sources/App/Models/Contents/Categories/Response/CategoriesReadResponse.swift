@@ -11,6 +11,6 @@ import Vapor
 
 struct CategoriesReadResponse: Content {
     
-    var categories: [CategoryResponse]
+    var categories: [CategoryReadResponse]
     
 }
