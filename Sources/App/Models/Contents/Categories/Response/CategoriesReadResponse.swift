@@ -11,10 +11,6 @@ import Vapor
 
 struct CategoriesReadResponse: Content {
     
-    var categories: [String]
-    
-    init(categories: [Category]) {
-        self.categories = categories.map { $0.name }
-    }
+    var categories: [CategoryResponse]
     
 }

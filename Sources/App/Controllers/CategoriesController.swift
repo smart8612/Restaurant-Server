@@ -33,7 +33,15 @@ struct CategoriesController: RouteCollection {
     
     func read(req: Request) async throws -> Response {
         let categories = try await Category.query(on: req.db).all()
-        let result = CategoriesReadResponse(categories: categories)
+        
+        let categoriesResponse = try categories.map { category in
+            CategoryResponse(
+                id: try category.requireID(),
+                name: category.name
+            )
+        }
+        
+        let result = CategoriesReadResponse(categories: categoriesResponse)
         return try await result.encodeResponse(for: req)
     }
     
