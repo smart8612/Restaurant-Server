@@ -11,6 +11,6 @@ import Vapor
 
 struct CategoryDeleteRequest: Content {
     
-    var targetCategoryName: String
+    var targetCategoryId: Int
     
 }

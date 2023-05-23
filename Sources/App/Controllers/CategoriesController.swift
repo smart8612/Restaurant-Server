@@ -65,10 +65,7 @@ struct CategoriesController: RouteCollection {
     func delete(req: Request) async throws -> Response {
         let content = try req.content.decode(CategoryDeleteRequest.self)
         
-        let targetCategory = try await Category.query(on: req.db)
-            .filter(\.$name == content.targetCategoryName)
-            .first()
-        
+        let targetCategory = try await Category.find(content.targetCategoryId, on: req.db)
         guard let targetCategory = targetCategory else {
             throw Abort(.notFound)
         }
