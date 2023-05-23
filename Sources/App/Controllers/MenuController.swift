@@ -15,17 +15,14 @@ struct MenuController: RouteCollection {
         let menu = routes.grouped("menu")
         menu.post("", use: create)
         menu.get("", use: read)
-        menu.patch("", use: update)
-        menu.delete("", use: delete)
+//        menu.patch("", use: update)
+//        menu.delete("", use: delete)
     }
     
     func create(req: Request) async throws -> Response {
         let content = try req.content.decode(MenuCreateRequest.self)
         
-        let category = try await Category.query(on: req.db)
-            .filter(\.$name == content.categoryName)
-            .first()
-        
+        let category = try await Category.find(content.categoryId, on: req.db)
         guard let category = category, let categoryID = category.id else {
             throw Abort(.notFound)
         }
@@ -39,7 +36,7 @@ struct MenuController: RouteCollection {
             estimatedPrepTime: content.estimatedPrepTime
         ).create(on: req.db)
         
-        return req.redirect(to: "menu/\(category.name)")
+        return req.redirect(to: "menu?category=\(category.name)")
     }
     
     func read(req: Request) async throws -> Response {
@@ -74,37 +71,35 @@ struct MenuController: RouteCollection {
         return try await result.encodeResponse(for: req)
     }
     
-    func update(req: Request) async throws -> Response {
-        let content = try req.content.decode(CategoryUpdateRequest.self)
-        
-        let targetCategory = try await Category.query(on: req.db)
-            .filter(\.$name == content.targetCategoryName)
-            .first()
-        
-        guard let targetCategory = targetCategory else {
-            throw Abort(.notFound)
-        }
-
-        targetCategory.name = content.changedCategoryName
-        try await targetCategory.update(on: req.db)
-        
-        return req.redirect(to: "categories")
-    }
-    
-    func delete(req: Request) async throws -> Response {
-        let content = try req.content.decode(MenuDeleteRequest.self)
-        
-        let targetMenuItem = try await MenuItem.find(content.menuId, on: req.db)
-        guard let targetMenuItem = targetMenuItem else {
-            throw Abort(.noContent)
-        }
-        
-        let categoryName = targetMenuItem.$name.value ?? ""
-        
-        try await targetMenuItem.delete(on: req.db)
-        
-        return req.redirect(to: "categories/\(categoryName)")
-    }
+//    func update(req: Request) async throws -> Response {
+//        let content = try req.content.decode(CategoryUpdateRequest.self)
+//        
+//        let targetCategory = try await Category.query(on: req.db)
+//        
+//        guard let targetCategory = targetCategory else {
+//            throw Abort(.notFound)
+//        }
+//
+//        targetCategory.name = content.changedCategoryName
+//        try await targetCategory.update(on: req.db)
+//        
+//        return req.redirect(to: "categories")
+//    }
+//    
+//    func delete(req: Request) async throws -> Response {
+//        let content = try req.content.decode(MenuDeleteRequest.self)
+//        
+//        let targetMenuItem = try await MenuItem.find(content.menuId, on: req.db)
+//        guard let targetMenuItem = targetMenuItem else {
+//            throw Abort(.noContent)
+//        }
+//        
+//        let categoryName = targetMenuItem.$name.value ?? ""
+//        
+//        try await targetMenuItem.delete(on: req.db)
+//        
+//        return req.redirect(to: "categories/\(categoryName)")
+//    }
     
 }
 

@@ -11,7 +11,7 @@ import Vapor
 
 struct MenuCreateRequest: Content {
     
-    var categoryName: String
+    var categoryId: Int
     var menuName: String
     var description: String
     var price: Double
