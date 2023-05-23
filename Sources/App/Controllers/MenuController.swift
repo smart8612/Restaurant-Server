@@ -15,7 +15,6 @@ struct MenuController: RouteCollection {
         let menu = routes.grouped("menu")
         menu.post("", use: create)
         menu.get("", use: read)
-        menu.get("", ":category", use: read)
         menu.patch("", use: update)
         menu.delete("", use: delete)
     }
