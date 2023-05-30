@@ -32,20 +32,18 @@ struct RestaurantController: RouteCollection {
         let fileName = req.parameters.get("name") ?? ""
         
         // Get the file path of the image you want to return
-        let filePath = "\(req.application.directory.publicDirectory)images/\(fileName)"
-        
-        print(filePath)
+        let filePath = "/app/Public/Images/\(fileName)"
 
         // Read the image file data from disk
-        guard let fileData = FileManager.default.contents(atPath: filePath) else {
+        guard let fileData = try? await req.fileio.collectFile(at: filePath) else {
             throw Abort(.notFound)
         }
-
+        
         // Create a Vapor response with the image data
         let response = Response(
             status: .ok,
             headers: HTTPHeaders([("Content-Type", "image/jpeg")]),
-            body: Response.Body(data: fileData)
+            body: Response.Body(buffer: fileData)
         )
 
         return response
