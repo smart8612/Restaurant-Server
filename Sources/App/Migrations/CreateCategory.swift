@@ -6,7 +6,7 @@ struct CreateCategory: AsyncMigration {
     func prepare(on database: Database) async throws {
         try await database.schema(Category.schema)
             .field("id", .int, .identifier(auto: true))
-            .field("category", .string, .required)
+            .field("name", .string, .required)
             .create()
         
         try await [
@@ -21,8 +21,7 @@ struct CreateCategory: AsyncMigration {
     
     // Optionally reverts the changes made in the prepare method
     func revert(on database: Database) async throws {
-        try await database.schema(Category.schema)
-            .delete()
+        try await database.schema(Category.schema).delete()
     }
     
 }
